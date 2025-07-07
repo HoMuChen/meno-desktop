@@ -9,7 +9,6 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^13.5.0",
-    "@types/jest": "^27.5.2",
     "@types/node": "^16.18.126",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
@@ -29,7 +28,16 @@
     "electron": "electron .",
     "electron-dev": "concurrently \"npm start\" \"wait-on http://localhost:3000 && electron .\"",
     "electron-build": "npm run build && electron-builder",
-    "build-electron": "npm run build && electron-builder --publish=never"
+    "build-electron": "npm run build && electron-builder --publish=never",
+    "test:unit": "jest --testPathPattern=__tests__",
+    "test:unit:watch": "jest --testPathPattern=__tests__ --watch",
+    "test:unit:coverage": "jest --testPathPattern=__tests__ --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:debug": "playwright test --debug",
+    "test:all": "npm run test:unit && npm run test:e2e",
+    "test:ci": "npm run test:unit:coverage && npm run test:e2e"
   },
   "eslintConfig": {
     "extends": [
@@ -50,9 +58,14 @@
     ]
   },
   "devDependencies": {
+    "@playwright/test": "^1.53.2",
+    "@types/jest": "^30.0.0",
     "concurrently": "^9.2.0",
     "electron": "^37.2.0",
     "electron-builder": "^26.0.12",
+    "jest-environment-jsdom": "^30.0.4",
+    "msw": "^2.10.3",
+    "playwright": "^1.53.2",
     "wait-on": "^8.0.3"
   },
   "build": {
