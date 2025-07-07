@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { signIn, signUp, signInWithGoogle } from '../firebase/auth';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Mail } from 'lucide-react';
 
 const Login: React.FC = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLogin, setIsLogin] = useState(true);
@@ -22,6 +24,7 @@ const Login: React.FC = () => {
       } else {
         await signUp(email, password);
       }
+      navigate('/');
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -35,6 +38,7 @@ const Login: React.FC = () => {
 
     try {
       await signInWithGoogle();
+      navigate('/');
     } catch (err: any) {
       setError(err.message);
     } finally {
