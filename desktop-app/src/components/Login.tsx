@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import { signIn, signUp, signInWithGoogle } from '../firebase/auth';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './ui/card';
+import { Button } from './ui/button';
+import { Mail } from 'lucide-react';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -40,88 +43,101 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div style={{ maxWidth: '400px', margin: '0 auto', padding: '20px' }}>
-      <h2>{isLogin ? 'Login' : 'Sign Up'}</h2>
-      
-      {error && (
-        <div style={{ color: 'red', marginBottom: '10px' }}>
-          {error}
-        </div>
-      )}
+    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+      <Card className="w-full max-w-md">
+        <CardHeader className="space-y-1">
+          <CardTitle className="text-2xl text-center">
+            {isLogin ? 'Welcome back' : 'Create an account'}
+          </CardTitle>
+          <CardDescription className="text-center">
+            {isLogin 
+              ? 'Enter your email and password to login' 
+              : 'Enter your details to create your account'}
+          </CardDescription>
+        </CardHeader>
+        
+        <CardContent>
+          {error && (
+            <div className="bg-destructive/15 text-destructive text-sm p-3 rounded-md mb-4">
+              {error}
+            </div>
+          )}
 
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: '15px' }}>
-          <label>Email:</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            style={{ width: '100%', padding: '8px', marginTop: '5px' }}
-          />
-        </div>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <label htmlFor="email" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                Email
+              </label>
+              <input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                placeholder="name@example.com"
+              />
+            </div>
 
-        <div style={{ marginBottom: '15px' }}>
-          <label>Password:</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            style={{ width: '100%', padding: '8px', marginTop: '5px' }}
-          />
-        </div>
+            <div className="space-y-2">
+              <label htmlFor="password" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                Password
+              </label>
+              <input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                placeholder={isLogin ? "Enter your password" : "Create a password"}
+              />
+            </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          style={{
-            width: '100%',
-            padding: '10px',
-            backgroundColor: '#007bff',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: loading ? 'not-allowed' : 'pointer'
-          }}
-        >
-          {loading ? 'Loading...' : (isLogin ? 'Login' : 'Sign Up')}
-        </button>
-      </form>
+            <Button
+              type="submit"
+              disabled={loading}
+              className="w-full"
+            >
+              {loading ? 'Loading...' : (isLogin ? 'Sign In' : 'Sign Up')}
+            </Button>
+          </form>
 
-      <button
-        onClick={handleGoogleSignIn}
-        disabled={loading}
-        style={{
-          width: '100%',
-          padding: '10px',
-          backgroundColor: '#dc3545',
-          color: 'white',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: loading ? 'not-allowed' : 'pointer',
-          marginTop: '10px'
-        }}
-      >
-        {loading ? 'Loading...' : 'Sign in with Google'}
-      </button>
+          <div className="relative my-4">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-muted-foreground">
+                Or continue with
+              </span>
+            </div>
+          </div>
 
-      <p style={{ textAlign: 'center', marginTop: '20px' }}>
-        {isLogin ? "Don't have an account?" : "Already have an account?"}
-        <button
-          onClick={() => setIsLogin(!isLogin)}
-          style={{
-            background: 'none',
-            border: 'none',
-            color: '#007bff',
-            cursor: 'pointer',
-            textDecoration: 'underline',
-            marginLeft: '5px'
-          }}
-        >
-          {isLogin ? 'Sign Up' : 'Login'}
-        </button>
-      </p>
+          <Button
+            onClick={handleGoogleSignIn}
+            disabled={loading}
+            variant="outline"
+            className="w-full"
+          >
+            <Mail className="mr-2 h-4 w-4" />
+            {loading ? 'Loading...' : 'Google'}
+          </Button>
+        </CardContent>
+
+        <CardFooter>
+          <p className="text-center text-sm text-muted-foreground w-full">
+            {isLogin ? "Don't have an account?" : "Already have an account?"}
+            <Button
+              onClick={() => setIsLogin(!isLogin)}
+              variant="link"
+              className="px-1 font-normal"
+            >
+              {isLogin ? 'Sign up' : 'Sign in'}
+            </Button>
+          </p>
+        </CardFooter>
+      </Card>
     </div>
   );
 };

@@ -3,6 +3,11 @@ import { useAuth } from '../contexts/AuthContext';
 import { logOut } from '../firebase/auth';
 import { uploadFileWithProgress } from '../firebase/storage';
 import { addDocument } from '../firebase/database';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
+import { Alert, AlertDescription } from './ui/alert';
+import { Mic, MicOff, Upload, LogOut, Trash2, CheckCircle, AlertCircle } from 'lucide-react';
 
 const Home: React.FC = () => {
   const { currentUser } = useAuth();
@@ -147,185 +152,140 @@ const Home: React.FC = () => {
   };
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center',
-        marginBottom: '30px'
-      }}>
-        <h1>Meeting Management</h1>
-        <div>
-          <span style={{ marginRight: '10px' }}>
-            {currentUser?.email || 'User'}
-          </span>
-          <button
-            onClick={handleLogout}
-            style={{
-              padding: '8px 16px',
-              backgroundColor: '#dc3545',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer'
-            }}
-          >
-            Logout
-          </button>
-        </div>
-      </div>
-
-      {error && (
-        <div style={{
-          backgroundColor: '#f8d7da',
-          color: '#721c24',
-          padding: '10px',
-          borderRadius: '4px',
-          marginBottom: '20px'
-        }}>
-          {error}
-        </div>
-      )}
-
-      {success && (
-        <div style={{
-          backgroundColor: '#d4edda',
-          color: '#155724',
-          padding: '10px',
-          borderRadius: '4px',
-          marginBottom: '20px'
-        }}>
-          {success}
-        </div>
-      )}
-
-      <div style={{
-        backgroundColor: '#f8f9fa',
-        padding: '20px',
-        borderRadius: '8px',
-        marginBottom: '20px'
-      }}>
-        <h2>Add Meeting</h2>
-        
-        {/* Audio Recording Section */}
-        <div style={{ marginBottom: '30px' }}>
-          <h3>1. Record Audio</h3>
-          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-            {!isRecording && !audioBlob && (
-              <button
-                onClick={startRecording}
-                style={{
-                  padding: '10px 20px',
-                  backgroundColor: '#28a745',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer'
-                }}
-              >
-                Start Recording
-              </button>
-            )}
-            
-            {isRecording && (
-              <>
-                <button
-                  onClick={stopRecording}
-                  style={{
-                    padding: '10px 20px',
-                    backgroundColor: '#dc3545',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer'
-                  }}
-                >
-                  Stop Recording
-                </button>
-                <span style={{ color: '#dc3545' }}>● Recording...</span>
-              </>
-            )}
-            
-            {audioBlob && !isRecording && (
-              <>
-                <audio controls src={URL.createObjectURL(audioBlob)} />
-                <button
-                  onClick={uploadAudioRecording}
-                  disabled={uploading}
-                  style={{
-                    padding: '10px 20px',
-                    backgroundColor: '#007bff',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: uploading ? 'not-allowed' : 'pointer'
-                  }}
-                >
-                  Upload Recording
-                </button>
-                <button
-                  onClick={() => setAudioBlob(null)}
-                  style={{
-                    padding: '10px 20px',
-                    backgroundColor: '#6c757d',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer'
-                  }}
-                >
-                  Discard
-                </button>
-              </>
-            )}
+    <div className="min-h-screen bg-background p-4">
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold">Meeting Management</h1>
+          <div className="flex items-center gap-4">
+            <span className="text-sm text-muted-foreground">
+              {currentUser?.email || 'User'}
+            </span>
+            <Button
+              onClick={handleLogout}
+              variant="destructive"
+              size="sm"
+            >
+              <LogOut className="w-4 h-4 mr-2" />
+              Logout
+            </Button>
           </div>
         </div>
 
-        {/* File Upload Section */}
-        <div>
-          <h3>2. Upload File</h3>
-          <input
-            ref={fileInputRef}
-            type="file"
-            onChange={handleFileUpload}
-            disabled={uploading}
-            accept="audio/*,video/*,.pdf,.doc,.docx,.txt"
-            style={{
-              padding: '10px',
-              border: '1px solid #ced4da',
-              borderRadius: '4px',
-              width: '100%',
-              cursor: uploading ? 'not-allowed' : 'pointer'
-            }}
-          />
-          <small style={{ color: '#6c757d' }}>
-            Supported: Audio, Video, PDF, Word documents, Text files
-          </small>
-        </div>
-
-        {/* Upload Progress */}
-        {uploading && (
-          <div style={{ marginTop: '20px' }}>
-            <div style={{
-              width: '100%',
-              backgroundColor: '#e9ecef',
-              borderRadius: '4px',
-              overflow: 'hidden'
-            }}>
-              <div
-                style={{
-                  width: `${uploadProgress}%`,
-                  backgroundColor: '#007bff',
-                  height: '20px',
-                  transition: 'width 0.3s ease'
-                }}
-              />
-            </div>
-            <p style={{ textAlign: 'center', marginTop: '5px' }}>
-              Uploading... {Math.round(uploadProgress)}%
-            </p>
-          </div>
+        {/* Alerts */}
+        {error && (
+          <Alert variant="destructive" className="mb-6">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
         )}
+
+        {success && (
+          <Alert className="mb-6 border-green-200 bg-green-50 text-green-900">
+            <CheckCircle className="h-4 w-4 text-green-600" />
+            <AlertDescription>{success}</AlertDescription>
+          </Alert>
+        )}
+
+        {/* Main Content Card */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Add Meeting</CardTitle>
+            <CardDescription>
+              Record audio or upload files to create a new meeting entry
+            </CardDescription>
+          </CardHeader>
+          
+          <CardContent className="space-y-6">
+            {/* Audio Recording Section */}
+            <div>
+              <h3 className="text-lg font-semibold mb-4">1. Record Audio</h3>
+              <div className="flex gap-3 items-center flex-wrap">
+                {!isRecording && !audioBlob && (
+                  <Button
+                    onClick={startRecording}
+                    variant="default"
+                  >
+                    <Mic className="w-4 h-4 mr-2" />
+                    Start Recording
+                  </Button>
+                )}
+                
+                {isRecording && (
+                  <>
+                    <Button
+                      onClick={stopRecording}
+                      variant="destructive"
+                    >
+                      <MicOff className="w-4 h-4 mr-2" />
+                      Stop Recording
+                    </Button>
+                    <span className="text-destructive flex items-center gap-1">
+                      <span className="animate-pulse">●</span> Recording...
+                    </span>
+                  </>
+                )}
+            
+                {audioBlob && !isRecording && (
+                  <>
+                    <audio 
+                      controls 
+                      src={URL.createObjectURL(audioBlob)} 
+                      className="max-w-xs"
+                    />
+                    <Button
+                      onClick={uploadAudioRecording}
+                      disabled={uploading}
+                    >
+                      <Upload className="w-4 h-4 mr-2" />
+                      Upload Recording
+                    </Button>
+                    <Button
+                      onClick={() => setAudioBlob(null)}
+                      variant="outline"
+                    >
+                      <Trash2 className="w-4 h-4 mr-2" />
+                      Discard
+                    </Button>
+                  </>
+                )}
+              </div>
+            </div>
+
+            {/* File Upload Section */}
+            <div>
+              <h3 className="text-lg font-semibold mb-4">2. Upload File</h3>
+              <div className="space-y-2">
+                <Input
+                  ref={fileInputRef}
+                  type="file"
+                  onChange={handleFileUpload}
+                  disabled={uploading}
+                  accept="audio/*,video/*,.pdf,.doc,.docx,.txt"
+                  className="cursor-pointer"
+                />
+                <p className="text-sm text-muted-foreground">
+                  Supported: Audio, Video, PDF, Word documents, Text files
+                </p>
+              </div>
+            </div>
+
+            {/* Upload Progress */}
+            {uploading && (
+              <div className="space-y-2">
+                <div className="w-full bg-secondary rounded-full overflow-hidden">
+                  <div
+                    className="bg-primary h-2 transition-all duration-300 ease-out"
+                    style={{ width: `${uploadProgress}%` }}
+                  />
+                </div>
+                <p className="text-center text-sm text-muted-foreground">
+                  Uploading... {Math.round(uploadProgress)}%
+                </p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
