@@ -63,9 +63,11 @@
     "concurrently": "^9.2.0",
     "electron": "^37.2.0",
     "electron-builder": "^26.0.12",
+    "identity-obj-proxy": "^3.0.0",
     "jest-environment-jsdom": "^30.0.4",
     "msw": "^2.10.3",
     "playwright": "^1.53.2",
+    "ts-jest": "^29.4.0",
     "wait-on": "^8.0.3"
   },
   "build": {
